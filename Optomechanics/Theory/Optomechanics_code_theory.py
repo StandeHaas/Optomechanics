@@ -40,3 +40,37 @@ rho = 3440      #kg/m3
 
 frequencies = frequency(np.array(alpha_roots),E,rho,L,h)
 print(frequencies)
+
+a3 = -1
+a1 = -a3
+def _a4(a3, k, L):
+
+    a4 = -a3 * (np.cosh(k*L) + np.cos(k*L))/(np.sinh(k*L) + np.sin(k*L))
+    return a4,-a4
+
+
+def _u(a1,a2,a3,a4, k, x):
+
+    u = a1*np.cosh(k*x) + a2*np.sinh(k*x) + a3*np.cos(k*x) + a4*np.sin(k*x)
+    return u 
+
+k_n = np.array(alpha_roots[0:4]) / L
+
+color = ['navy', 'blue', 'royalblue', 'lightblue']
+
+for i in range(len(k_n)):
+    k = k_n[i]
+    a4, a2 = _a4(a3,k,L)
+    x = np.linspace(0,L,1000)
+    u = _u(a1,a2,a3,a4, k, x)
+    plt.plot(x,u, color[i], label='Mode {}'.format(i))
+
+
+plt.xlabel('Length (m)')
+plt.ylabel('Deflection')
+plt.ylim(-2,2)
+plt.xlim(0,0.0002)
+plt.legend()
+plt.grid(True)
+plt.savefig('Images\dheory_mode.eps', format='eps')
+plt.show()
